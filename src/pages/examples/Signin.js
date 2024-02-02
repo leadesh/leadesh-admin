@@ -21,28 +21,31 @@ const hardcodedCountryCodes = [
 const SignIn = () => {
   const history = useHistory();
   const [formData, setFormData] = useState({
-    mobile: "",
+    email: "",
     password: "",
-    countryCode: hardcodedCountryCodes[0],
   });
+
+  // console.log(formData);
+
 
   const [loading, setLoading] = useState(false);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const fullMobile = formData.countryCode.value + formData.mobile;
+    // const fullMobile = formData.countryCode.value + formData.mobile;
     // console.log(fullMobile);
 
-    const requestData = {
-      password: formData.password,
-      number: fullMobile
-    };
+
     // console.log(requestData);
 
     try {
 
-      const response = await axios.post("https://leadesh-whatsapp.onrender.com/api/signin", requestData);
+      const response = await axios.post("http://localhost:5000/api/admin/login", {
+        email: formData.email,
+        password: formData.password
+      });
+      // const response = await axios.post("https://leadesh-whatsapp.onrender.com/api/signin", requestData);
       // const jwtToken = response.headers['Jwt'];
       // console.log('Response Headers:', response.headers);
 
@@ -78,7 +81,7 @@ const SignIn = () => {
       });
       setFormData({
         mobile: "",
-        password: "",
+        email: "",
         countryCode: hardcodedCountryCodes[0],
       });
     }
@@ -129,66 +132,11 @@ const SignIn = () => {
                 <Form className="mt-4" onSubmit={handleFormSubmit}>
 
 
-                  <div className="d-flex mb-4  ">
-                    <Form.Group id="name" >
-                      <Form.Label>Country code</Form.Label>
-                      <div className="mx-1 py-1" >
-                        <InputGroup>
-                          {/* <InputGroup.Text className="border border-primary">
-                            <FontAwesomeIcon icon={faUser} />
-                          </InputGroup.Text> */}
-                          <Select
-                            options={hardcodedCountryCodes}
-                            value={formData.countryCode}
-                            onChange={handleCountryCodeChange}
-                            isSearchable={false}
-                            className="country-code-select"
-                          />
-                        </InputGroup>
-                      </div>
-                    </Form.Group>
-                    <Form.Group id="mobile">
-                      <Form.Label>Your Mobile Number</Form.Label>
-                      <InputGroup>
-                        <InputGroup.Text>
-                          <FontAwesomeIcon icon={faEnvelope} />
-                        </InputGroup.Text>
-                        <Form.Control
-                          autoFocus
-                          required
-                          type="tel"
-                          placeholder="1234567890"
-                          name="mobile"
-                          value={formData.mobile}
-                          onChange={handleInputChange}
-                          pattern="[0-9]{10}"
-                          title="Please enter a valid 10-digit mobile number"  // Set a title for the pattern
-                        />
-                      </InputGroup>
-                    </Form.Group>
-                  </div>
 
 
 
-
-
-                  {/* <Form.Group id="name" className="mb-4">
-                    <Form.Label>Country code</Form.Label>
-                    <InputGroup>
-                      <InputGroup.Text>
-                        <FontAwesomeIcon />
-                      </InputGroup.Text>
-                      <Select
-                        options={hardcodedCountryCodes}
-                        value={formData.countryCode}
-                        onChange={handleCountryCodeChange}
-                        isSearchable={false}
-                        className="country-code-select"
-                      />
-                    </InputGroup>
-                  </Form.Group> */}
-                  {/* <Form.Group id="email" className="mb-4">
-                    <Form.Label>Your Mobile Number</Form.Label>
+                  <Form.Group id="email" className="mb-4">
+                    <Form.Label>Your Email Id</Form.Label>
                     <InputGroup>
                       <InputGroup.Text>
                         <FontAwesomeIcon icon={faEnvelope} />
@@ -196,16 +144,17 @@ const SignIn = () => {
                       <Form.Control
                         autoFocus
                         required
-                        type="tel"
-                        placeholder="1234567890"
-                        name="mobile"
-                        value={formData.mobile}
+                        type="email"
+                        placeholder="example@gmail.com"
+                        name="email"
+                        value={formData.email}
                         onChange={handleInputChange}
-                        pattern="[0-9]{10}"
-                        title="Please enter a valid 10-digit mobile number"  // Set a title for the pattern
+                        pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                        title="Please enter a valid email address"
                       />
                     </InputGroup>
-                  </Form.Group> */}
+                  </Form.Group>
+
                   <Form.Group id="password" className="mb-4">
                     <Form.Label>Your Password</Form.Label>
                     <InputGroup>

@@ -93,8 +93,8 @@ const MyProfile = () => {
 
             // console.log(respose.data);
             setFormData({
-                mobile: respose.data.number,
-                name: respose.data.name,
+                mobile: respose?.data?.number,
+                name: respose?.data?.name,
             });
 
         }

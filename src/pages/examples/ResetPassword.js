@@ -10,12 +10,12 @@ import { Routes } from "../../routes";
 
 export default () => {
 
-  const [mobile, setMobile] = useState();
+  const [email, setEmail] = useState();
   const [Loading, setLoading] = useState(false);
 
-  console.log(mobile);
+  // console.log(email);
   const handleInputChange = (e) => {
-    setMobile(e.target.value);
+    setEmail(e.target.value);
   }
   return (
 
@@ -37,7 +37,7 @@ export default () => {
                   }
                 </h3>
                 <Form>
-                  <Form.Group id="email" className="mb-4">
+                  {/* <Form.Group id="email" className="mb-4">
                     <Form.Label>Your Mobile number</Form.Label>
                     <InputGroup>
                       <InputGroup.Text>
@@ -55,7 +55,32 @@ export default () => {
                         title="Please enter a valid 10-digit mobile number"  // Set a title for the pattern
                       />
                     </InputGroup>
+                  </Form.Group> */}
+
+
+                  <Form.Group id="email" className="mb-4">
+                    <Form.Label>Your Email Id</Form.Label>
+                    <InputGroup>
+                      <InputGroup.Text>
+                        <FontAwesomeIcon icon={faEnvelope} />
+                      </InputGroup.Text>
+                      <Form.Control
+                        autoFocus
+                        required
+                        type="email"
+                        placeholder="example@gmail.com"
+                        name="email"
+                        value={email}
+                        onChange={handleInputChange}
+                        pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                        title="Please enter a valid email address"
+                      />
+                    </InputGroup>
                   </Form.Group>
+
+
+
+
                   {/* <Form.Group id="password" className="mb-4">
                     <Form.Label>Your Password</Form.Label>
                     <InputGroup>
