@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { message } from '../../data/tables'
 import { useHistory } from 'react-router-dom';
 import { Routes } from '../../routes';
-import axios from 'axios'
+import Axios from '../../axios';
 
 
 
@@ -10,6 +9,7 @@ import axios from 'axios'
 const Messages = () => {
     const history = useHistory();
     const [allMessage, setAllMessage] = useState();
+    const [loading, setLoading] = useState(false);
 
 
     const rowsPerPage = 8;
@@ -28,8 +28,10 @@ const Messages = () => {
     const jwt = localStorage.getItem('jwt');
 
     const getAllMessage = async () => {
+        setLoading(true);
+
         try {
-            const response = await axios.get('https://leadesh-whatsapp.onrender.com/api/admin/allMessages', {
+            const response = await Axios.get('/api/admin/allMessages', {
                 headers: {
                     'jwt': `${jwt}`,
                     'Content-Type': 'application/json',
@@ -42,7 +44,7 @@ const Messages = () => {
         catch (err) {
             console.log("error in getAllMessage(): ", err);
         }
-
+        setLoading(false);
     }
 
     useEffect(() => {
@@ -80,41 +82,64 @@ const Messages = () => {
                         <th scope="col">Timestamp</th>
                     </tr>
                 </thead>
-                <tbody>
 
 
-                    {/* <tr>
+                {/* <tr>
                         <th>name</th>
                         <th>Mobile</th>
                         <th>keyword</th>
                         <th>messages</th>
                         <th>Timestamp</th>
-
+                        
                     </tr> */}
-                    {
-                        currentRows && currentRows.length !== 0 ?
-                            currentRows.map((item, index) =>
 
-                            (
-                                <tr key={index}>
-                                    <th>{item.username}</th>
-                                    <th>{item.userId.number}</th>
-                                    {/* <th>{item.keyword}</th> */}
-                                    <th>{item.conversation}</th>
-                                    <th> {new Date(item.timestamp).toLocaleDateString('en-US', options)}</th>
+                {
+                    loading ?
+                        <tbody className='w-100'>
 
-                                </tr>
-                            )
-                            )
+                            <tr>
+                                <td colSpan="6" className="text-center">
+                                    <div colSpan="6" className="text-center">
+                                        <div className="spinner-border" role="status">
+                                            <span className="sr-only">Loading...</span>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
 
-                            :
-                            <>
+                        </tbody>
+                        :
+                        <tbody>
+                            {
 
-                                <p className="text-center">No Any Message</p>
-                            </>
+                                currentRows && currentRows.length !== 0 ?
+                                    currentRows.map((item, index) =>
 
-                    }
-                </tbody >
+                                    (
+                                        <tr key={index}>
+                                            <th>{item.username}</th>
+                                            <th>{item.userId.number}</th>
+                                            {/* <th>{item.keyword}</th> */}
+                                            <th>{item.conversation}</th>
+                                            <th> {new Date(item.timestamp).toLocaleDateString('en-US', options)}</th>
+
+                                        </tr>
+                                    )
+                                    )
+
+                                    :
+                                    <>
+                                        <tr>
+                                            <td colSpan="6" className="text-center">
+                                                <p>No Any Message</p>
+                                            </td>
+                                        </tr>
+                                    </>
+
+                            }
+                        </tbody >
+                }
+
             </table >
 
             <div style={{ cursor: 'pointer' }}>

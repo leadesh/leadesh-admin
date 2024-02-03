@@ -7,17 +7,19 @@ import { faEye, faEllipsisH } from '@fortawesome/free-solid-svg-icons'
 
 import { TransactionsTable } from "../components/Tables";
 import axios from 'axios'
+import Axios from "../axios";
 
 
 export default () => {
-
+  const [loading, setLoading] = useState(false);
   const [orderDetails, setOrderDetails] = useState();
 
   const getOrders = async () => {
+    setLoading(true);
     const jwt = localStorage.getItem('jwt');
 
     try {
-      const respose = await axios.get('https://leadesh-whatsapp.onrender.com/api/admin/transactions', {
+      const respose = await Axios.get('/api/admin/transactions', {
         headers: {
           'jwt': `${jwt}`,
           'Content-Type': 'application/json',
@@ -30,6 +32,7 @@ export default () => {
     catch (err) {
       console.log("error in get user", err);
     }
+    setLoading(false)
   }
 
   const options = {
@@ -125,20 +128,49 @@ export default () => {
               <th scope="col">Status</th>
             </tr>
           </thead>
-          <tbody>
-            {
-              currentRows &&
-              currentRows.map((item, index) =>
-                <tr key={index} >
-                  <th>{item.packageSelected._id}</th>
-                  <th>{item.packageSelected.name}</th>
-                  <th>{new Date(item.packageSelected.startTime).toLocaleDateString('en-US', options)}</th>
-                  <th>{new Date(item.packageSelected.trialPeriodEndTime).toLocaleDateString('en-US', options)}</th>
-                  <th> {item.packageSelected.subscriptionStatus}</th>
-                </tr>
+
+          {
+            loading ?
+              (
+                <tbody className='w-100'>
+
+                  <tr>
+                    <td colSpan="6" className="text-center">
+                      <div colSpan="6" className="text-center">
+                        <div className="spinner-border" role="status">
+                          <span className="sr-only">Loading...</span>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                </tbody>
               )
-            }
-          </tbody >
+              :
+              <tbody>
+                {
+                  currentRows ?
+                    currentRows.map((item, index) =>
+                      <tr key={index} >
+                        <th>{item.packageSelected._id}</th>
+                        <th>{item.packageSelected.name}</th>
+                        <th>{new Date(item.packageSelected.startTime).toLocaleDateString('en-US', options)}</th>
+                        <th>{new Date(item.packageSelected.trialPeriodEndTime).toLocaleDateString('en-US', options)}</th>
+                        <th> {item.packageSelected.subscriptionStatus}</th>
+                      </tr>
+                    )
+                    :
+                    <>
+                      <tr>
+                        <td colSpan="6" className="text-center">
+                          <p>No Any Order</p>
+                        </td>
+                      </tr>
+                    </>
+                }
+              </tbody >
+          }
+
         </table >
 
         <div style={{ cursor: 'pointer' }}>

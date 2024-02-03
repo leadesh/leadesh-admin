@@ -3,12 +3,14 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faEnvelope, faUnlockAlt } from "@fortawesome/free-solid-svg-icons";
 import { Col, Row, Form, Card, Button, Container, InputGroup } from '@themesberg/react-bootstrap';
-import { Link } from 'react-router-dom';
-
+import { Link, useHistory } from 'react-router-dom';
+import Axios from '../../axios'
+import Swal from 'sweetalert2';
 import { Routes } from "../../routes";
 
 
 export default () => {
+  const history = useHistory();
 
   const [email, setEmail] = useState();
   const [Loading, setLoading] = useState(false);
@@ -16,6 +18,44 @@ export default () => {
   // console.log(email);
   const handleInputChange = (e) => {
     setEmail(e.target.value);
+  }
+  const resetPasswordHandler = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await Axios.post('/api/reseatPassword', { email: email });
+      if (response.status === 200) {
+
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Email Send successfully',
+          text: response?.data?.message
+        }).then((result) => {
+          if (result.isConfirmed) {
+
+            history.push(Routes.Signin.path);
+          }
+        });
+
+
+        // history.push(Routes.Presentation.path);
+      }
+      // console.log(response);
+    }
+    catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Email Send Failed',
+        text: 'Problem In Sending Email',
+      });
+    }
+
+
+
+
+    setLoading(false)
   }
   return (
 
@@ -32,9 +72,8 @@ export default () => {
             <Col xs={12} className="d-flex align-items-center justify-content-center">
               <div className="bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100 fmxw-500">
                 <h3 className="mb-4">
-                  {
-                    Loading ? <>Loading...</> : <> Reset password </>
-                  }
+                  Reset password
+
                 </h3>
                 <Form>
                   {/* <Form.Group id="email" className="mb-4">
@@ -99,8 +138,10 @@ export default () => {
                       <Form.Control required type="password" placeholder="Confirm Password" />
                     </InputGroup>
                   </Form.Group> */}
-                  <Button variant="primary" type="submit" className="w-100">
-                    Reset password
+                  <Button variant="primary" type="submit" className="w-100" onClick={resetPasswordHandler}>
+                    {
+                      Loading ? <>Loading...</> : <> Reset password </>
+                    }
                   </Button>
                 </Form>
               </div>

@@ -3,18 +3,21 @@ import { faEye, faEllipsisH } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 // import { getSuggestedQuery } from '@testing-library/react'
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
+// import axios from 'axios'
+import Axios from '../axios'
 // import { Link } from 'react-router-dom'
 
 
 const Users = () => {
     const [userData, setUserData] = useState();
+    const [loading, setLoading] = useState(false);
 
     const getUsers = async () => {
+        setLoading(true);
         const jwt = localStorage.getItem('jwt');
 
         try {
-            const respose = await axios.get('https://leadesh-whatsapp.onrender.com/api/admin/users', {
+            const respose = await Axios.get('/api/admin/users', {
                 headers: {
                     'jwt': `${jwt}`,
                     'Content-Type': 'application/json',
@@ -27,6 +30,9 @@ const Users = () => {
         catch (err) {
             console.log("error in get user", err);
         }
+
+        setLoading(false);
+
     }
     const options = {
         year: 'numeric',
@@ -64,6 +70,7 @@ const Users = () => {
 
             <table className="table table-hover table-responsive-xl table-responsive-md">
                 <thead>
+
                     <tr>
                         <th scope="col" >Id</th>
                         <th scope="col">Name</th>
@@ -73,81 +80,112 @@ const Users = () => {
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
-                <tbody>
-
-                    {
-                        currentRows && currentRows.map((item, index) =>
+                {
+                    loading ?
                         (
-                            <tr key={index} >
-                                <th>{item.id}</th>
-                                <th>{item.name}</th>
-                                <th>{new Date(item.joinedData).toLocaleDateString('en-US', options)}</th>
-                                <th> {item?.packageSelected?.name}</th>
-                                <th>
-                                    {
-                                        item?.keywords.length !== 0 ?
-                                            <div className="dropdown">
-                                                <div className="dropdown-toggle" type="button" id={`drop${item.id}`} data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <FontAwesomeIcon icon={faEllipsisH} />
-                                                    {/* show all */}
-                                                    {/* <FontAwesomeIcon icon="fas fa-ellipsis-h" /> */}
-                                                </div>
+                            <tbody className='w-100'>
 
-                                                <ul className="dropdown-menu" aria-labelledby={`drop${item.id}`}>
-                                                    {
-                                                        item?.keywords?.map((keyword, i) =>
-
-                                                            <li key={i}>{keyword.value}</li>
-
-                                                        )
-                                                    }
-                                                </ul>
-
-                                            </div>
-
-
-                                            :
-                                            <>Keyword Not Found</>
-                                    }
-
-                                </th>
-                                <th>
-                                    <div data-toggle="modal" data-target={`#modal${item.id}`}>
-                                        <FontAwesomeIcon className='mx-1' icon={faEye} />
-
-                                    </div>
-
-
-                                    <div className="modal fade" id={`modal${item?.id}`} role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                        <div className="modal-dialog modal-dialog-centered" role="document">
-                                            <div className="modal-content">
-                                                <div className="modal-header">
-                                                    <h5 className="modal-title" id="exampleModalLongTitle">User Details</h5>
-                                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div className="modal-body">
-                                                    <>
-                                                        <p>ID: {item.id}</p>
-                                                        <p>Name: {item.name}</p>
-                                                        <p>Joined On: {new Date(item.joinedData).toLocaleDateString('en-US', options)}</p>
-                                                        {/* ... other user details */}
-                                                    </>
-                                                </div>
-                                                <div className="modal-footer">
-                                                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                </div>
+                                <tr>
+                                    <td colSpan="6" className="text-center">
+                                        <div colSpan="6" className="text-center">
+                                            <div className="spinner-border" role="status">
+                                                <span className="sr-only">Loading...</span>
                                             </div>
                                         </div>
-                                    </div>
-                                </th>
-                            </tr>
-                        )
+                                    </td>
+                                </tr>
 
+                            </tbody>
                         )
-                    }
-                </tbody >
+                        :
+                        <tbody>
+                            {
+                                currentRows ?
+                                    currentRows?.map((item, index) =>
+
+                                        <tr key={index} >
+                                            <th>{item.id}</th>
+                                            <th>{item.name}</th>
+                                            <th>{new Date(item.joinedData).toLocaleDateString('en-US', options)}</th>
+                                            <th> {item?.packageSelected?.name}</th>
+                                            <th>
+                                                {
+                                                    item?.keywords.length !== 0 ?
+                                                        <div className="dropdown">
+                                                            <div className="dropdown-toggle" type="button" id={`drop${item.id}`} data-bs-toggle="dropdown" aria-expanded="false">
+                                                                <FontAwesomeIcon icon={faEllipsisH} />
+                                                                {/* show all */}
+                                                                {/* <FontAwesomeIcon icon="fas fa-ellipsis-h" /> */}
+                                                            </div>
+
+                                                            <ul className="dropdown-menu" aria-labelledby={`drop${item.id}`}>
+                                                                {
+                                                                    item?.keywords?.map((keyword, i) =>
+
+                                                                        <li key={i}>{keyword.value}</li>
+
+                                                                    )
+                                                                }
+                                                            </ul>
+
+                                                        </div>
+
+
+                                                        :
+                                                        <>Keyword Not Found</>
+                                                }
+
+                                            </th>
+                                            <th>
+                                                <div data-toggle="modal" data-target={`#modal${item.id}`}>
+                                                    <FontAwesomeIcon className='mx-1' icon={faEye} />
+
+                                                </div>
+
+
+                                                <div className="modal fade" id={`modal${item?.id}`} role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                    <div className="modal-dialog modal-dialog-centered" role="document">
+                                                        <div className="modal-content">
+                                                            <div className="modal-header">
+                                                                <h5 className="modal-title" id="exampleModalLongTitle">User Details</h5>
+                                                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div className="modal-body">
+                                                                <>
+                                                                    <p>ID: {item.id}</p>
+                                                                    <p>Name: {item.name}</p>
+                                                                    <p>Joined On: {new Date(item.joinedData).toLocaleDateString('en-US', options)}</p>
+                                                                    {/* ... other user details */}
+                                                                </>
+                                                            </div>
+                                                            <div className="modal-footer">
+                                                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    )
+                                    :
+                                    <>
+                                        <tr>
+                                            <td colSpan="6" className="text-center">
+                                                <p>User Not Found</p>
+                                            </td>
+                                        </tr>
+
+                                    </>
+
+
+
+
+                            }
+                        </tbody >
+
+                }
             </table >
 
             <div style={{ cursor: 'pointer' }}>

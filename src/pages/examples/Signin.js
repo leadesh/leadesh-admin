@@ -8,6 +8,7 @@ import BgImage from "../../assets/img/illustrations/signin.svg";
 import Select from "react-select";
 import axios from "axios";
 import Swal from 'sweetalert2';
+import Axios from "../../axios";
 // import Axios from "../../axios"
 // import Cookies from "js-cookie";
 ;
@@ -41,7 +42,7 @@ const SignIn = () => {
 
     try {
 
-      const response = await axios.post("https://leadesh-whatsapp.onrender.com/api/admin/login", {
+      const response = await Axios.post("/api/admin/login", {
         email: formData.email,
         password: formData.password
       });
@@ -77,15 +78,11 @@ const SignIn = () => {
       Swal.fire({
         icon: 'error',
         title: 'Sign-In Failed',
-        text: 'Invalid number or password. Please try again.',
+        text: 'Invalid email or password. Please try again.',
       });
-      setFormData({
-        mobile: "",
-        email: "",
-        countryCode: hardcodedCountryCodes[0],
-      });
-    }
 
+      console.log(error);
+    }
     setLoading(false);
 
   };

@@ -4,7 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faEnvelope, faLockOpen, faMobile, faUnlockAlt, faUser } from "@fortawesome/free-solid-svg-icons";
 import { Col, Row, Form, Card, Button, Container, InputGroup } from '@themesberg/react-bootstrap';
 import { Link } from 'react-router-dom';
-import axios from 'axios'
+// import { Axios } from 'axios'
+import Axios from "../../axios";
 import { Routes } from "../../routes";
 import { useHistory } from 'react-router-dom'
 import Swal from 'sweetalert2';
@@ -16,9 +17,10 @@ const MyProfile = () => {
     const [formData, setFormData] = useState({
         mobile: "",
         name: "",
+        email: ""
     });
 
-
+    console.log(formData);
 
     // console.log(formData);
     const handleInputChange = (e) => {
@@ -32,10 +34,11 @@ const MyProfile = () => {
 
 
         try {
-            const response = await axios.post('https://leadesh-whatsapp.onrender.com/api/user',
+            const response = await Axios.post('/api/user',
                 {
                     username: formData.name,
                     newNumber: formData.mobile,
+                    email: formData.email
                 },
                 {
                     headers: {
@@ -84,7 +87,7 @@ const MyProfile = () => {
         const jwt = localStorage.getItem('jwt');
 
         try {
-            const respose = await axios.get('https://leadesh-whatsapp.onrender.com/api/getMe', {
+            const respose = await Axios.get('/api/getMe', {
                 headers: {
                     'jwt': `${jwt}`,
                     'Content-Type': 'application/json',
@@ -95,6 +98,7 @@ const MyProfile = () => {
             setFormData({
                 mobile: respose?.data?.number,
                 name: respose?.data?.name,
+                email: respose?.data?.email,
             });
 
         }
@@ -138,6 +142,28 @@ const MyProfile = () => {
                                         </InputGroup>
                                     </Form.Group>
 
+
+                                    <Form.Group id="email" className="mb-4">
+                                        <Form.Label>Email</Form.Label>
+                                        <InputGroup>
+                                            <InputGroup.Text>
+                                                <FontAwesomeIcon icon={faEnvelope} />
+                                            </InputGroup.Text>
+                                            <Form.Control
+                                                autoFocus
+                                                required
+                                                type="email"
+                                                placeholder="example@gmail.com"
+                                                name="email"
+                                                value={formData.email}
+                                                onChange={handleInputChange}
+                                                pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                                                title="Please enter a valid email address"
+                                            />
+                                        </InputGroup>
+                                    </Form.Group>
+
+
                                     <Form.Group id="mobile" className="mb-4">
                                         <Form.Label>Mobile Number</Form.Label>
                                         <InputGroup>
@@ -146,13 +172,13 @@ const MyProfile = () => {
                                             </InputGroup.Text>
                                             <Form.Control
                                                 required
-                                                readOnly
+
                                                 type="tel"
                                                 placeholder="Your Mobile Number"
                                                 name="mobile"
                                                 value={formData.mobile}
                                                 onChange={handleInputChange}
-                                                pattern="[0-9]{10}" // Assuming a 10-digit mobile number, adjust as needed
+                                                // pattern="[0-9]{10}" // Assuming a 10-digit mobile number, adjust as needed
                                                 title="Please enter a valid 10-digit mobile number"
                                             />
                                         </InputGroup>

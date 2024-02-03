@@ -8,6 +8,7 @@ import axios from 'axios'
 import { Routes } from "../../routes";
 import { useHistory } from 'react-router-dom'
 import Swal from 'sweetalert2';
+import Axios from "../../axios";
 
 const ChangePassword = () => {
     const history = useHistory();
@@ -33,7 +34,7 @@ const ChangePassword = () => {
 
 
         try {
-            const response = await axios.post('https://leadesh-whatsapp.onrender.com/api/password',
+            const response = await Axios.post('/api/password',
                 {
                     oldPassword: formData.oldPassword,
                     newPassword: formData.newPassword,
@@ -107,12 +108,12 @@ const ChangePassword = () => {
                                             </InputGroup.Text>
                                             <Form.Control
                                                 required
-                                                type="text"
+                                                type="password"
                                                 placeholder="old password"
                                                 name="oldPassword"
                                                 value={formData.oldPassword}
                                                 onChange={handleInputChange}
-                                                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+                                                pattern="^(?=.*[a-z](){}[])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
                                                 title="The password should have 1 upper-case letter, 1 lower-case letter, 1 number, 1 special character and at least 8 characters."
                                             />
                                         </InputGroup>
@@ -125,7 +126,7 @@ const ChangePassword = () => {
                                             </InputGroup.Text>
                                             <Form.Control
                                                 required
-                                                type="text"
+                                                type="password"
                                                 placeholder="new password"
                                                 name="newPassword"
                                                 value={formData.newPassword}
